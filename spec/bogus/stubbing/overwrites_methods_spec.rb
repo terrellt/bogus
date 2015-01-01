@@ -59,7 +59,7 @@ module Bogus
 
     context "with objects that use method missing" do
       class UsesMethodMissing
-        def respond_to?(name)
+        def respond_to?(name, privated=false)
           name == :greet
         end
 

@@ -5,7 +5,7 @@ module Bogus
     takes :method_stringifier
 
     def verify!(object, method_name, args)
-      stubbing_non_existent_method!(object, method_name) unless object.respond_to?(method_name)
+      stubbing_non_existent_method!(object, method_name) unless object.respond_to?(method_name, true)
       return unless object.methods.include?(method_name)
       return if WithArguments.with_matcher?(args)
       method = object.method(method_name)

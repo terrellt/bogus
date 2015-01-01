@@ -73,7 +73,7 @@ describe Bogus::VerifiesStubDefinition do
   end
 
   class UsesMethodMissing
-    def respond_to?(method)
+    def respond_to?(method, privated=false)
       method == :foo
     end
 
@@ -92,6 +92,21 @@ describe Bogus::VerifiesStubDefinition do
 
     it "disallows stubbing methods that the object does not respond to" do
       it_disallows(:bar, [], NameError)
+    end
+  end
+
+  class PrivateMethodClass
+    private
+
+    def test
+    end
+  end
+
+  context "with objects that use private methods" do
+    let(:object) { PrivateMethodClass.new }
+    
+    it "allows stubbing methods that are private" do
+      it_allows(:test, [])
     end
   end
 end

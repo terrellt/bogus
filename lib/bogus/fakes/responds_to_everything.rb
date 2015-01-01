@@ -7,7 +7,7 @@ module Bogus
       __shadow__
     end
 
-    def respond_to?(method)
+    def respond_to?(method, privated=false)
       true
     end
 

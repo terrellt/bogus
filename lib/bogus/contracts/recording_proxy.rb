@@ -16,7 +16,7 @@ class Bogus::RecordingProxy < BasicObject
     method_missing(:==, other)
   end
 
-  def respond_to?(name)
+  def respond_to?(name, privated=false)
     @instance.respond_to?(name)
   end
 end

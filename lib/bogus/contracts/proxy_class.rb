@@ -24,7 +24,7 @@ module Bogus
       @recording_proxy.__send__(:const_get, name)
     end
 
-    def respond_to?(name)
+    def respond_to?(name, privated=false)
       @recording_proxy.respond_to?(name)
     end
   end
