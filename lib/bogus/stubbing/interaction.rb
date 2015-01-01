@@ -46,7 +46,27 @@ module Bogus
 
       def same_result?
         return true unless recorded.has_result && stubbed.has_result
+        return same_entities? if recorded.return_value.kind_of?(Bogus::Fake) || stubbed.return_value.kind_of?(Bogus::Fake)
         recorded.return_value == stubbed.return_value && recorded.error == stubbed.error
+      end
+
+      def same_entities?
+        return false unless recorded.return_value.class.__copied_class__ == stubbed.return_value.class.__copied_class__
+        recorded_stubs = recorded.return_value.__shadow__.instance_variable_get(:@stubs)
+        stubbed_stubs = stubbed.return_value.__shadow__.instance_variable_get(:@stubs)
+        recorded_stubs.each do |recorded_stub|
+          recorded_stub = Interaction.new(recorded_stub[0].method, recorded_stub[0].args, &recorded_stub[1]) if recorded_stub.kind_of?(Array)
+          found = false
+          stubbed_stubs.each do |stubbed_stub|
+            stubbed_stub = Interaction.new(stubbed_stub[0].method, stubbed_stub[0].args, &stubbed_stub[1]) if stubbed_stub.kind_of?(Array)
+            if self.class.new({:recorded => recorded_stub, :stubbed => stubbed_stub}).same?
+              found = true
+              break
+            end
+          end
+          return false unless found
+        end
+        return true
       end
     end
 

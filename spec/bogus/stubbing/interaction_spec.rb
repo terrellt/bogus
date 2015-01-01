@@ -3,6 +3,7 @@ require 'spec_helper'
 module Bogus
   describe Interaction do
     class SomeError < StandardError; end
+    class SomeClass; def result; end; def bla; end; end;
 
     same = [
       [[:foo, [:bar], "value"], [:foo, [:bar], "value"]],
@@ -17,6 +18,7 @@ module Bogus
       [[:foo, [:bar], "same value"], [:foo, [AnyArgs], "same value"]],
       [[:foo, [:bar, :baz]], [:foo, [:bar, Anything]]],
       [[:foo, [1], "same value"], [:foo, [WithArguments.new{|n| n.odd?}], "same value"]],
+      [[:banana, [],Bogus.fake_for(:some_class, :result => 1){SomeClass}], [:banana, [],Bogus.fake_for(:some_class, :result => 1){SomeClass}]],
       [[:foo, [1]], [:foo, [SameClass.new(Integer)]]]
     ]
 
@@ -35,6 +37,7 @@ module Bogus
       [[:foo, [:bar]], [:foo, [:baz]]],
       [[:baz, [:bar]], [:foo, [:bar]]],
       [[:foo, [2], "same value"], [:foo, [WithArguments.new{|n| n.odd?}], "same value"]],
+      [[:banana, [],Bogus.fake_for(:some_class, :result => 1){SomeClass}], [:banana, [],Bogus.fake_for(:some_class, :result => 2){SomeClass}]],
       [[:foo, [1]], [:foo, [SameClass.new(Symbol)]]]
     ]
 
