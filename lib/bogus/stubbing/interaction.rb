@@ -55,12 +55,10 @@ module Bogus
         recorded_stubs = recorded.return_value.__shadow__.instance_variable_get(:@stubs)
         stubbed_stubs = stubbed.return_value.__shadow__.instance_variable_get(:@stubs)
         recorded_stubs.each do |recorded_stub|
-          recorded_stub = Interaction.new(recorded_stub[0].method, recorded_stub[0].args, &recorded_stub[1]) if recorded_stub.kind_of?(Array)
           found = false
           stubbed_stubs.each do |stubbed_stub|
-            stubbed_stub = Interaction.new(stubbed_stub[0].method, stubbed_stub[0].args, &stubbed_stub[1]) if stubbed_stub.kind_of?(Array)
-            if self.class.new({:recorded => recorded_stub, :stubbed => stubbed_stub}).same?
-              found = true
+            if self.class.new({:recorded => recorded_stub[0], :stubbed => stubbed_stub[0]}).same?
+              found = true if recorded_stub[1].call == stubbed_stub[1].call
               break
             end
           end
