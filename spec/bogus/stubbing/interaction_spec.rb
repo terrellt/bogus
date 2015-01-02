@@ -18,7 +18,7 @@ module Bogus
       [[:foo, [:bar], "same value"], [:foo, [AnyArgs], "same value"]],
       [[:foo, [:bar, :baz]], [:foo, [:bar, Anything]]],
       [[:foo, [1], "same value"], [:foo, [WithArguments.new{|n| n.odd?}], "same value"]],
-      [[:banana, [],Bogus.fake_for(:some_class, :result => 1){SomeClass}], [:banana, [],Bogus.fake_for(:some_class, :result => 1){SomeClass}]],
+      [[:banana, [Bogus.fake_for(:some_class, :result => 1){SomeClass}],1], [:banana, [Bogus.fake_for(:some_class, :result => 1){SomeClass}],1]],
       [[:foo, [1]], [:foo, [SameClass.new(Integer)]]]
     ]
 
@@ -37,7 +37,7 @@ module Bogus
       [[:foo, [:bar]], [:foo, [:baz]]],
       [[:baz, [:bar]], [:foo, [:bar]]],
       [[:foo, [2], "same value"], [:foo, [WithArguments.new{|n| n.odd?}], "same value"]],
-      [[:banana, [],Bogus.fake_for(:some_class, :result => 1){SomeClass}], [:banana, [],Bogus.fake_for(:some_class, :result => 2){SomeClass}]],
+      [[:banana, [Bogus.fake_for(:some_class, :result => 1){SomeClass}],1], [:banana, [Bogus.fake_for(:some_class, :result => 2){SomeClass}],1]],
       [[:foo, [1]], [:foo, [SameClass.new(Symbol)]]]
     ]
 

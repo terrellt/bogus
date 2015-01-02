@@ -57,7 +57,7 @@ module Bogus
         recorded_stubs.each do |recorded_stub|
           found = false
           stubbed_stubs.each do |stubbed_stub|
-            if self.class.new({:recorded => recorded_stub[0], :stubbed => stubbed_stub[0]}).same?
+            if Interaction.same?({:recorded => recorded_stub[0], :stubbed => stubbed_stub[0]})
               found = true if recorded_stub[1].call == stubbed_stub[1].call
               break
             end
@@ -78,11 +78,36 @@ module Bogus
 
       def same?
         return true if with_matcher_args?
-
-        stubbed == recorded_without_defaults
+        return false if stubbed.length != recorded_without_defaults.length
+        stubbed.each_with_index do |stubbed_arg, i|
+          return false unless compare_arguments(recorded_without_defaults[i], stubbed_arg)
+        end
+        true
       end
 
       private
+
+      def compare_arguments(recorded_arg, stubbed_arg)
+        return compare_entities(recorded_arg, stubbed_arg) if recorded_arg.kind_of?(Bogus::Fake) && stubbed_arg.kind_of?(Bogus::Fake)
+        stubbed_arg == recorded_arg
+      end
+
+      def compare_entities(recorded_arg, stubbed_arg)
+        return false unless recorded_arg.class.__copied_class__ == stubbed_arg.class.__copied_class__
+        recorded_stubs = recorded_arg.__shadow__.instance_variable_get(:@stubs)
+        stubbed_stubs = stubbed_arg.__shadow__.instance_variable_get(:@stubs)
+        recorded_stubs.each do |recorded_stub|
+          found = false
+          stubbed_stubs.each do |stubbed_stub|
+            if Interaction.same?({:recorded => recorded_stub[0], :stubbed => stubbed_stub[0]})
+              found = true if recorded_stub[1].call == stubbed_stub[1].call
+              break
+            end
+          end
+          return false unless found
+        end
+        return true
+      end
 
       def recorded_without_defaults
         without_defaults = recorded.reject{|v| DefaultValue == v}
