@@ -51,6 +51,7 @@ module Bogus
       end
 
       def same_entities?
+        return false unless recorded.return_value.class.respond_to?(:__copied_class__, true) && stubbed.return_value.class.respond_to?(:__copied_class__, true)
         return false unless recorded.return_value.class.__copied_class__ == stubbed.return_value.class.__copied_class__
         recorded_stubs = recorded.return_value.__shadow__.instance_variable_get(:@stubs)
         stubbed_stubs = stubbed.return_value.__shadow__.instance_variable_get(:@stubs)
