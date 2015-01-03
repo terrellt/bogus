@@ -46,7 +46,7 @@ module Bogus
 
       def same_result?
         return true unless recorded.has_result && stubbed.has_result
-        return same_entities? if recorded.return_value.kind_of?(Bogus::Fake) || stubbed.return_value.kind_of?(Bogus::Fake)
+        return same_entities? if recorded.return_value.kind_of?(Bogus::Fake) && stubbed.return_value.kind_of?(Bogus::Fake)
         recorded.return_value == stubbed.return_value && recorded.error == stubbed.error
       end
 
